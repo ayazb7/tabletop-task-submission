@@ -138,6 +138,7 @@ document.getElementById('submitVehicle').addEventListener('click', async functio
         const details = await fetchCarDetails(regNumber);
         if (details) {
             garage.add({ "reg": regNumber, "make": details.make, "model": details.model, "image": details.image, "year": details.yearOfManufacture})
+            currentIndex = garage.count - 1;
             initCarousel();
             document.getElementById('addVehicleModal').style.display = 'none';
             document.body.style.overflow = 'auto'; 
