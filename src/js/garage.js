@@ -7,6 +7,10 @@ export class Car {
         this.year = year;
     }
 
+    log() {
+        console.log(`Car Details - Reg: ${this.reg}, Make: ${this.make}, Model: ${this.model}, Year: ${this.year}, Image: ${this.image}`);
+    }
+
     setMake(make) {
         this.make = make;
     }
@@ -26,13 +30,8 @@ export class Car {
 
 
 const garage = {
-    "count": 4,
-    "cars":[
-        new Car("AA19 AAA", "Audi", "Q4 e-tron", "src/images/car.png", 2019),
-        new Car("BB20 BBB", "Tesla", "Model S", "src/images/car.png", 2020),
-        new Car("CC18 CCC", "BMW", "iX", "src/images/car.png", 2018),
-        new Car("DD08 DDD", "Nissan", "Micra", "src/images/car.png", 2008)
-    ]
+    "count": 0,
+    "cars":[]
 };
 
 export const Garage = {   
@@ -42,7 +41,9 @@ export const Garage = {
         if (value && value.reg && typeof value.reg === 'string') {
             const exists = this.cars.some(car => car.reg === value.reg);
             if (!exists) {
-                const newCar = new Car(value.reg);
+                const newCar = new Car(value.reg, value.make, value.model, value.image, value.year);
+                console.log('Adding new car');
+                newCar.log();
                 this.cars.push(newCar);
                 this.count += 1;
             }

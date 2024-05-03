@@ -33,15 +33,18 @@ h1 {
 }
 
 .car-info h2 {
-    font-size: 40px;
+    font-size: 35px;
     font-weight: 800;
     font-family: 'Urbanist', sans-serif;
+    margin-bottom: 20px;
 }
 
 .car-info .model, .car-info .year {
     font-family: 'Urbanist', sans-serif;
     font-size: 20px;
     font-weight: 500;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 .add-vehicle-button {
@@ -74,27 +77,26 @@ h1 {
 }
 
 .carousel {
+    display: flex;
+    align-items: center;
+    justify-content: center; 
     position: relative;
-    margin-top: 100px;
-    width: 100%;
-    height: 370px;
+    width: 60%;
+    height: 50vh;
     overflow: hidden;
-}
+  }
 
 .car-container {
     position: absolute;
-    width: 200px;
-    height: 320px;
+    width: 40%;
+    height: 60%;
     text-align: center;
     background-color: #F1F7F9;
     border: 1.5px solid black;
     border-radius: 15px;
-    padding: 20px;
+    padding: 40px 30px 15px 30px;
     transition:  0.5s;
-    left: calc(50% - 110px);
-    top: 0;
-    padding-bottom: 20px;
-    margin-bottom: 15%;
+    transform: translateY(-50%); 
 }
 
 .circle-button {
@@ -117,10 +119,86 @@ h1 {
     background-color: #365abc;
 }
 
-.circle-button.left {
-    margin-right: 3rem; 
+.modal {
+    display: none; 
+    position: fixed;
+    z-index: 3;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%; 
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4); 
+    justify-content: center;
+    align-items: center;
 }
 
-.circle-button.right {
-    margin-left: 3rem; 
+.modal-content {
+    background-color: #fefefe;
+    margin: 25% auto;
+    padding: 20px 20px 30px 20px;
+    border: 1.5px solid black;
+    background-color: #F1F7F9;
+    width: 30%;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    position: relative;
+}
+
+.close-button {
+    color: #aaa;
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: black;
+    text-decoration: none;
+}
+
+.input-field {
+    width: 80%;
+    padding: 8px 10px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    border: 1px solid black;
+    border-radius: 30px;
+    font-family: 'Urbanist', sans-serif;
+    font-size: 16px;
+    outline: none;
+}
+
+h2 {
+    text-align: center;
+    font-family: 'Urbanist', sans-serif;
+    font-weight: 600;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.submit-button {
+    background-color: #4E76DF;
+    color: white;
+    border: none;
+    border-radius: 35px;
+    padding: 10px 20px;
+    font-size: 20px;
+    font-weight: 500;
+    font-family: 'Urbanist', sans-serif;
+    cursor: pointer;
+    outline: none;
+    margin-top: 20px;
+    transition: background-color 0.3s;
+}
+
+.submit-button:hover {
+    background-color: #365abc;
 }
