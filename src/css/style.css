@@ -141,7 +141,7 @@ h1 {
 .circle-button.disabled {
     opacity: 0.6;
     cursor: default;
-    background-color: #4E76DF; /* Default background color */
+    background-color: #4E76DF; 
 }
 
 .modal {

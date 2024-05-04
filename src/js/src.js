@@ -36,15 +36,6 @@ async function fetchCarDetails(reg) {
     }
 }
 
-function createSnackbar(message, type, idNum) {
-    return `
-    <div id="${type}-snackbar-${idNum}" class="${type}-snackbar">
-        <img src="./../images/${type}.png" alt="${type}" class="${type}-icon">
-        <h3 id="${type}-snackbar-message-${idNum}">${message}</h3>
-    </div>
-`;
-}
-
 function showSnackbar(message, type) {
     var snackbar = document.getElementById(`${type}-snackbar`);
     var messageElement = document.getElementById(`${type}-snackbar-message`);
@@ -58,35 +49,16 @@ function showSnackbar(message, type) {
     }, 5000);
 }
 
-function showErrorSnackbar(errorMessage) {
-    var snackbar = document.getElementById("error-snackbar");
-    var messageElement = document.getElementById("error-snackbar-message");
-
-    messageElement.textContent = errorMessage;
-
-    snackbar.className = "show";
-    
-    setTimeout(function() { 
-        snackbar.className = snackbar.className.replace("show", ""); 
-    }, 5000); 
-}
-
-function showSuccessSnackbar(errorMessage) {
-    var snackbar = document.getElementById("success-snackbar");
-    var messageElement = document.getElementById("success-snackbar-message");
-
-    messageElement.textContent = errorMessage;
-
-    snackbar.className = "show";
-    
-    setTimeout(function() { 
-        snackbar.className = snackbar.className.replace("show", ""); 
-    }, 5000); 
-}
 
 function updateButtonStates() {
     const leftButton = document.querySelector('.circle-button.left');
     const rightButton = document.querySelector('.circle-button.right');
+
+    if (garage.count > 0) {
+        leftButton.style.display = 'flex';
+        rightButton.style.display = 'flex';
+    }
+
     if (currentIndex === 0) {
         leftButton.classList.add('disabled');
     } else {
@@ -152,16 +124,6 @@ function createCarCardHTML(car, index) {
     `;
 }
 
-function createDefaultCarCardHTML() {
-    return `
-        <div class="default-car-container" id="default-car">
-            <img src="images/car.png" alt="Car Image" class="car-image">
-            <div class="car-info">
-                <h3>Add a vehicle to get started!</h3>
-            </div>
-        </div>
-    `;
-}
 
 function createInnerCarCardHTML(car, index) {
     car.log();
