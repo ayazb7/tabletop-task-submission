@@ -2,6 +2,7 @@ window.addEventListener("garage-loaded", start, false);
 
 const axios = require('axios');
 let currentIndex = 0;
+let snackbarId = 0;
 let items = document.querySelectorAll('.carousel .car-container');
 
 async function fetchCarDetails(reg) {
@@ -17,10 +18,12 @@ async function fetchCarDetails(reg) {
         const response = await axios.post(url, {"registrationNumber": reg}, {headers});
         console.log(`Status for vehicle: ${reg}, ${response.status}`);
         console.log(response.data);
+        showSnackbar('Vehicle successfully added!', 'success');
         return response.data;
     } catch (error) {
         console.error(`Error fetching details for ${reg}: ${error}`);
         if (error.response) {
+            showSnackbar(error.response.data.errors[0].detail , 'error');
             console.error(error.response.data);
             console.error(error.response.status);
             console.error(error.response.headers);
@@ -33,7 +36,77 @@ async function fetchCarDetails(reg) {
     }
 }
 
+function createSnackbar(message, type, idNum) {
+    return `
+    <div id="${type}-snackbar-${idNum}" class="${type}-snackbar">
+        <img src="./../images/${type}.png" alt="${type}" class="${type}-icon">
+        <h3 id="${type}-snackbar-message-${idNum}">${message}</h3>
+    </div>
+`;
+}
+
+function showSnackbar(message, type) {
+    var snackbar = document.getElementById(`${type}-snackbar`);
+    var messageElement = document.getElementById(`${type}-snackbar-message`);
+
+    messageElement.textContent = message;
+
+    snackbar.className = "show";
+
+    setTimeout(function() {
+        snackbar.className = snackbar.className.replace("show", ""); 
+    }, 5000);
+}
+
+function showErrorSnackbar(errorMessage) {
+    var snackbar = document.getElementById("error-snackbar");
+    var messageElement = document.getElementById("error-snackbar-message");
+
+    messageElement.textContent = errorMessage;
+
+    snackbar.className = "show";
+    
+    setTimeout(function() { 
+        snackbar.className = snackbar.className.replace("show", ""); 
+    }, 5000); 
+}
+
+function showSuccessSnackbar(errorMessage) {
+    var snackbar = document.getElementById("success-snackbar");
+    var messageElement = document.getElementById("success-snackbar-message");
+
+    messageElement.textContent = errorMessage;
+
+    snackbar.className = "show";
+    
+    setTimeout(function() { 
+        snackbar.className = snackbar.className.replace("show", ""); 
+    }, 5000); 
+}
+
+function updateButtonStates() {
+    const leftButton = document.querySelector('.circle-button.left');
+    const rightButton = document.querySelector('.circle-button.right');
+    if (currentIndex === 0) {
+        leftButton.classList.add('disabled');
+    } else {
+        leftButton.classList.remove('disabled');
+    }
+
+    if (currentIndex === garage.count - 1) {
+        rightButton.classList.add('disabled');
+    } else {
+        rightButton.classList.remove('disabled');
+    }
+}
+
 function updateCarDisplay() {
+    const defaultCarContainer = document.getElementById('default-car');
+    defaultCarContainer.style.display = 'none';
+
+    const contentWrapper = document.getElementById('car-cards');
+    contentWrapper.style.display = 'flex';
+
     items = document.querySelectorAll('.carousel .car-container');
     console.log(`Current index: ${currentIndex}`);
     items[currentIndex].innerHTML = createInnerCarCardHTML(garage.cars[currentIndex]);
@@ -41,6 +114,8 @@ function updateCarDisplay() {
     items[currentIndex].style.zIndex = 1;
     items[currentIndex].style.filter = 'none';
     items[currentIndex].style.opacity = 1;
+    
+    updateButtonStates();
 
     let counter = 0;
     for (var i = currentIndex - 1; i >= 0; i--) {
@@ -77,6 +152,17 @@ function createCarCardHTML(car, index) {
     `;
 }
 
+function createDefaultCarCardHTML() {
+    return `
+        <div class="default-car-container" id="default-car">
+            <img src="images/car.png" alt="Car Image" class="car-image">
+            <div class="car-info">
+                <h3>Add a vehicle to get started!</h3>
+            </div>
+        </div>
+    `;
+}
+
 function createInnerCarCardHTML(car, index) {
     car.log();
     return `
@@ -89,23 +175,34 @@ function createInnerCarCardHTML(car, index) {
     `;
 }
 
-function init() {
-    if (garage.cars.length > 0) {
-        updateCarDisplay(); 
-    }
-}
-
 function initCarousel() {
     const carousel = document.querySelector('.carousel');
     carousel.innerHTML = '';
 
+    const leftButton = document.querySelector('.circle-button.left');
+    const rightButton = document.querySelector('.circle-button.right');
+
     if (garage.cars.length > 0) {
+        const defaultCarContainer = document.getElementById('default-car');
+        defaultCarContainer.style.display = 'none';
+
+        const contentWrapper = document.getElementById('car-cards');
+        contentWrapper.style.display = 'flex';
+
         garage.cars.forEach((car, index) => {
             carousel.innerHTML += createCarCardHTML(car, index);
         });
-    }
+        updateCarDisplay();
+    } else {
+        const contentWrapper = document.getElementById('car-cards');
+        contentWrapper.style.display = 'none';
 
-    updateCarDisplay();
+        const defaultCarContainer = document.getElementById('default-car');
+        defaultCarContainer.style.display = 'block';
+
+        leftButton.style.display = 'none';
+        rightButton.style.display = 'none';
+    }
 }
 
 document.querySelector('.circle-button.left').addEventListener('click', () => {
@@ -123,12 +220,13 @@ document.querySelector('.circle-button.right').addEventListener('click', () => {
 });
 
 document.querySelector('.add-vehicle-button').addEventListener('click', function() {
-    document.getElementById('addVehicleModal').style.display = 'block';
+    document.getElementById('addVehicleModal').style.display = 'flex';
     document.body.style.overflow = 'hidden';
 });
 
 document.querySelector('.close-button').addEventListener('click', function() {
     document.getElementById('addVehicleModal').style.display = 'none';
+    document.getElementById('regNumber').value = '';
     document.body.style.overflow = 'auto'; 
 });
 
@@ -142,8 +240,10 @@ document.getElementById('submitVehicle').addEventListener('click', async functio
             initCarousel();
             document.getElementById('addVehicleModal').style.display = 'none';
             document.body.style.overflow = 'auto'; 
+            document.getElementById('regNumber').value = '';
         }
     } else {
+        showSnackbar('Registration number is required', 'error');
         console.error('Registration number is required');
     }
 });
@@ -153,21 +253,27 @@ window.onclick = function(event) {
     if (event.target == modal) {
         modal.style.display = 'none';
         document.body.style.overflow = 'auto';
+        document.getElementById('regNumber').value = '';
     }
 }
 
 async function start() {
     console.log(`Fetching details for ${garage.count} cars`);
+    let carsToDelete = [];
     for (const car of garage.cars) {
         if (car.reg) {
             const details = await fetchCarDetails(car.reg);
             console.log(`Received car details ${details}`);
             if (details) {
                 garage.updateCarDetails(car.reg, details.make, details.model, details.yearOfManufacture, details.image);
+            } else {
+                carsToDelete.push(car);
             }
         }
     }
-    console.log('Car details updated');
+
+    carsToDelete.forEach((car) => garage.delete(car.reg));
+    console.log(`Car details updated with ${garage.count} cars`);
 
     initCarousel(); 
 }
